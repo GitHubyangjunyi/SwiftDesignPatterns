@@ -23,10 +23,10 @@ class ViewController: UIViewController {
     }
 
     func displayStockTotal() {
-        let stockTotal = products.reduce(0) { (result, item) -> Int in
-            result + item.4
+        let stockTotal = products.reduce((0, 0.0)) { (result, item) -> (Int, Double) in
+            (result.0 + item.stockLevel, result.1 + item.stockValue)
         }
-        totalStockLabel.text = "\(stockTotal) Products in Stock"
+        totalStockLabel.text = "\(stockTotal.0) Products in Stock | Total Value: \(Utils.currencyStringFromNumber(number: stockTotal.1))"
     }
     
     @IBAction func stockLevelDidChange(_ sender: Any) {
@@ -34,22 +34,16 @@ class ViewController: UIViewController {
             while true {
                 currentCell = currentCell.superview!
                 if let cell = currentCell as? ProductTableCell {
-                    if let id = cell.productId {
-                        // 获得Cell在编辑的数据模型id
-                        var newStockLevel: Int?
+                    if let product = cell.product {
                         if let stepper = sender as? UIStepper {
-                            newStockLevel = Int(stepper.value)
+                            product.stockLevel = Int(stepper.value)
                         } else if let textfield = sender as? UITextField{
                             if let newValue = Int(textfield.text ?? "") {
-                                newStockLevel = newValue
+                                product.stockLevel = newValue
                             }
                         }
-                        // 数据格式合理
-                        if let level = newStockLevel {
-                            products[id].4 = level
-                            cell.stockStepper.value = Double(level)
-                            cell.stockField.text = String(level)
-                        }
+                        cell.stockStepper.value = Double(product.stockLevel)
+                        cell.stockField.text = String(product.stockLevel)
                     }
                     break
                 }
@@ -60,15 +54,15 @@ class ViewController: UIViewController {
     
     // MARK: - 模型数据
     var products = [
-        ("Kayak", "A boat for one person", "Watersports", 275.0, 10),
-        ("Lifejacket", "Protective and fashionable", "Watersports", 48.95, 14),
-        ("Soccer Ball", "FIFA-approved size and weight", "Soccer", 19.5, 32),
-        ("Corner Flags", "Give you playing field a professional touch", "Soccer", 34.95, 1),
-        ("Stadium", "Flat-packed 35,000-seat stadium", "Soccer", 79500.0, 4),
-        ("Thinking Cap", "Improve your brain efficiency by 75%", "Chess", 16.0, 8),
-        ("Unsteady Chair", "Secretly give your opponent a disadvantage", "Chess", 29.95, 3),
-        ("Human Chess Board", "A fun game for the family", "Chess", 75.0, 2),
-        ("Bling-Bling King", "Gold-plated, diamond-studded King", "Chess", 1200.0, 4)
+        Product.init(name: "Kayak", description: "A boat for one person", category: "Watersports", price: 275.0, stockLevel: 10),
+        Product.init(name: "Lifejacket", description: "Protective and fashionable", category: "Watersports", price: 48.95, stockLevel: 14),
+        Product.init(name: "Soccer Ball", description: "FIFA-approved size and weight", category: "Soccer", price: 19.5, stockLevel: 32),
+    Product.init(name: "Corner Flags", description: "Give you playing field a professional touch", category: "Soccer", price: 34.95, stockLevel: 1),
+    Product.init(name: "Stadium", description: "Flat-packed 35,000-seat stadium", category: "Soccer", price: 79500.0, stockLevel: 4),
+    Product.init(name: "Thinking Cap", description: "Improve your brain efficiency by 75%", category: "Chess", price: 16.0, stockLevel: 8),
+    Product.init(name: "Unsteady Chair", description: "Secretly give your opponent a disadvantage", category: "Chess", price: 29.95, stockLevel: 3),
+        Product.init(name: "Human Chess Board", description: "A fun game for the family", category: "Chess", price: 75.0, stockLevel: 2),
+        Product.init(name: "Bling-Bling King", description: "Gold-plated, diamond-studded King", category: "Chess", price: 1200.0, stockLevel: 4)
         ]
     
 }
@@ -81,11 +75,11 @@ extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProductCell") as! ProductTableCell
         let product = products[indexPath.row]
-        cell.nameLabel.text = product.0
-        cell.descriptionLabel.text = product.1
-        cell.stockStepper.value = Double(product.4)
-        cell.stockField.text = String(product.4)
-        cell.productId = indexPath.row
+        cell.product = product
+        cell.nameLabel.text = product.name
+        cell.descriptionLabel.text = product.description
+        cell.stockStepper.value = Double(product.stockLevel)
+        cell.stockField.text = String(product.stockLevel)
         return cell
     }
 }
