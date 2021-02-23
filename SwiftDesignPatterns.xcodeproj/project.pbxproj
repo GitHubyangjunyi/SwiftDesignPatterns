@@ -16,6 +16,7 @@
 		9D2EF63A25E13A1900BE3991 /* ProductTableCell.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D2EF63925E13A1900BE3991 /* ProductTableCell.swift */; };
 		9D5AC73C25E201F600D5D734 /* Utils.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5AC73B25E201F600D5D734 /* Utils.swift */; };
 		9D5AC73F25E204DF00D5D734 /* Product.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9D5AC73E25E204DF00D5D734 /* Product.swift */; };
+		9DF7E7CD25E4CAA200D30EBF /* Logger.swift in Sources */ = {isa = PBXBuildFile; fileRef = 9DF7E7CC25E4CAA200D30EBF /* Logger.swift */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
@@ -30,6 +31,7 @@
 		9D2EF63925E13A1900BE3991 /* ProductTableCell.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = ProductTableCell.swift; sourceTree = "<group>"; };
 		9D5AC73B25E201F600D5D734 /* Utils.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Utils.swift; sourceTree = "<group>"; };
 		9D5AC73E25E204DF00D5D734 /* Product.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Product.swift; sourceTree = "<group>"; };
+		9DF7E7CC25E4CAA200D30EBF /* Logger.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Logger.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -62,6 +64,7 @@
 		1C54222425DE997A00822FC0 /* SwiftDesignPatterns */ = {
 			isa = PBXGroup;
 			children = (
+				9DF7E7C925E4A2A400D30EBF /* Model */,
 				9D5AC73A25E201DD00D5D734 /* Utils */,
 				9D2EF63C25E13A1D00BE3991 /* View */,
 				1C54222525DE997A00822FC0 /* AppDelegate.swift */,
@@ -71,7 +74,7 @@
 				1C54222E25DE997B00822FC0 /* Assets.xcassets */,
 				1C54223025DE997B00822FC0 /* LaunchScreen.storyboard */,
 				1C54223325DE997B00822FC0 /* Info.plist */,
-				9D5AC73E25E204DF00D5D734 /* Product.swift */,
+				9DF7E7CC25E4CAA200D30EBF /* Logger.swift */,
 			);
 			path = SwiftDesignPatterns;
 			sourceTree = "<group>";
@@ -90,6 +93,14 @@
 				9D5AC73B25E201F600D5D734 /* Utils.swift */,
 			);
 			path = Utils;
+			sourceTree = "<group>";
+		};
+		9DF7E7C925E4A2A400D30EBF /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				9D5AC73E25E204DF00D5D734 /* Product.swift */,
+			);
+			path = Model;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
@@ -166,6 +177,7 @@
 				1C54222A25DE997A00822FC0 /* ViewController.swift in Sources */,
 				1C54222625DE997A00822FC0 /* AppDelegate.swift in Sources */,
 				9D2EF63A25E13A1900BE3991 /* ProductTableCell.swift in Sources */,
+				9DF7E7CD25E4CAA200D30EBF /* Logger.swift in Sources */,
 				1C54222825DE997A00822FC0 /* SceneDelegate.swift in Sources */,
 				9D5AC73F25E204DF00D5D734 /* Product.swift in Sources */,
 			);

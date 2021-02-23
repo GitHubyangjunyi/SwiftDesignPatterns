@@ -12,6 +12,10 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var totalStockLabel: UILabel!
     
+    let logger = Logger<Product> { (product) in
+        print("Change: \(product.name) \(product.stockLevel) items in stock")
+    }
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -44,6 +48,7 @@ class ViewController: UIViewController {
                         }
                         cell.stockStepper.value = Double(product.stockLevel)
                         cell.stockField.text = String(product.stockLevel)
+                        logger.logItem(item: product)
                     }
                     break
                 }
@@ -77,7 +82,7 @@ extension ViewController: UITableViewDataSource {
         let product = products[indexPath.row]
         cell.product = product
         cell.nameLabel.text = product.name
-        cell.descriptionLabel.text = product.description
+        cell.descriptionLabel.text = product.productDescription
         cell.stockStepper.value = Double(product.stockLevel)
         cell.stockField.text = String(product.stockLevel)
         return cell
