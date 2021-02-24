@@ -12,10 +12,6 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var totalStockLabel: UILabel!
     
-    let logger = Logger<Product> { (product) in
-        print("Change: \(product.name) \(product.stockLevel) items in stock")
-    }
-    
     override func viewDidLoad() {
         super.viewDidLoad()
         
