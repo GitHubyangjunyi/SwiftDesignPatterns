@@ -12,6 +12,9 @@ class ViewController: UIViewController {
     @IBOutlet weak var tableView: UITableView!
     @IBOutlet weak var totalStockLabel: UILabel!
     
+    var productStore = ProductDataStore()
+    
+    
     override func viewDidLoad() {
         super.viewDidLoad()
         
@@ -20,13 +23,25 @@ class ViewController: UIViewController {
         
         displayStockTotal()
         
+        productStore.callBack = { [self] (p: Product) in
+            for cell in tableView.visibleCells {
+                if let pcell = cell as? ProductTableCell {
+                    if pcell.product?.name == p.name {
+                        pcell.stockStepper.value = Double(p.stockLevel)
+                        pcell.stockField.text = String(p.stockLevel)
+                    }
+                }
+            }
+            displayStockTotal()
+        }
+        
     }
 
     func displayStockTotal() {
-        let stockTotal = products.reduce((0, 0.0)) { (result, item) -> (Int, Double) in
+        let finalTotals = productStore.products.reduce((0, 0.0)) { (result, item) -> (Int, Double) in
             (result.0 + item.stockLevel, result.1 + item.stockValue)
         }
-        totalStockLabel.text = "\(stockTotal.0) Products in Stock | Total Value: \(Utils.currencyStringFromNumber(number: stockTotal.1))"
+        totalStockLabel.text = "\(finalTotals.0) Products in Stock | Total Value: \(Utils.currencyStringFromNumber(number: finalTotals.1))"
     }
     
     @IBAction func stockLevelDidChange(_ sender: Any) {
@@ -70,12 +85,12 @@ class ViewController: UIViewController {
 
 extension ViewController: UITableViewDataSource {
     func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
-        return products.count
+        return productStore.products.count
     }
     
     func tableView(_ tableView: UITableView, cellForRowAt indexPath: IndexPath) -> UITableViewCell {
         let cell = tableView.dequeueReusableCell(withIdentifier: "ProductCell") as! ProductTableCell
-        let product = products[indexPath.row]
+        let product = productStore.products[indexPath.row]
         cell.product = product
         cell.nameLabel.text = product.name
         cell.descriptionLabel.text = product.productDescription
