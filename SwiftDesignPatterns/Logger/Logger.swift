@@ -8,7 +8,16 @@
 import Foundation
 
 let logger = Logger<Product> { (product) in
-    print("Change: \(product.name) \(product.stockLevel) items in stock")
+    var builder = ChangeRecordBuilder()
+    builder.productName = product.name
+    builder.category = product.category
+    builder.value = String(product.stockLevel)
+    builder.outerTag = "stockChange"
+    var changeRecord = builder.changeRecord
+    
+    if changeRecord != nil {
+        print(builder.changeRecord!)
+    }
 }
 
 final class Logger<T> where T: NSObject, T: NSCopying {
@@ -50,14 +59,4 @@ final class Logger<T> where T: NSObject, T: NSCopying {
     }
     
 }
-
-
-
-
-
-
-
-
-
-
 

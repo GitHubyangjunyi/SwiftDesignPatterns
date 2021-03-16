@@ -15,6 +15,7 @@ class Product: NSObject, NSCopying {
     
     private var stockLevelBackingValue = 0
     private var priceBackingValue = 0.0
+    fileprivate var salesTaxRate: Double = 0.2
     
     private(set) var price: Double {
         get { priceBackingValue }
@@ -27,10 +28,21 @@ class Product: NSObject, NSCopying {
     }
     
     var stockValue: Double {
-        get { price * Double(stockLevel) }
+        get { (price * (1 + salesTaxRate)) * Double(stockLevel) }
     }
     
-    init(name: String, description: String, category: String, price: Double, stockLevel: Int) {
+    var upsells: [UpsellPooortunities] {
+        return Array()
+    }
+    
+    // 顾客可能感兴趣的产品
+    enum UpsellPooortunities {
+        case SwimmingLessons
+        case MapOfLakes
+        case SoccerVideos
+    }
+    
+    required init(name: String, description: String, category: String, price: Double, stockLevel: Int) {
         self.name = name
         self.productDescription = description
         self.category = category
@@ -43,6 +55,20 @@ class Product: NSObject, NSCopying {
         
     }
     
+    class func createProduct(name: String, description: String, category: String, price: Double, stockLevel: Int) -> Product {
+        var productType: Product.Type
+        
+        switch category {
+        case "Watersports":
+            productType = WatersportsProduct.self
+        case "Soccer":
+            productType = SoccerProduct.self
+        default:
+            productType = Product.self
+        }
+        return productType.init(name: name, description: description, category: category, price: price, stockLevel: stockLevel)
+    }
+    
     // MARK: --NSCopying克隆协议
     func copy(with zone: NSZone? = nil) -> Any {
         return Product(name: self.name, description: self.productDescription, category: self.category, price: self.price, stockLevel: self.stockLevel)
@@ -50,4 +76,24 @@ class Product: NSObject, NSCopying {
     
 }
 
-// 解耦实现复制对象的过程和定义对象类的过程意味着修改Product类的初始化器/创建子类和使用子类无需在Logger类中做出相应的修改
+class WatersportsProduct: Product {
+    required init(name: String, description: String, category: String, price: Double, stockLevel: Int) {
+        super.init(name: name, description: description, category: category, price: price, stockLevel: stockLevel)
+        salesTaxRate = 0.1
+    }
+    
+    override var upsells: [Product.UpsellPooortunities] {
+        return [.SwimmingLessons, .MapOfLakes]
+    }
+}
+
+class SoccerProduct: Product {
+    required init(name: String, description: String, category: String, price: Double, stockLevel: Int) {
+        super.init(name: name, description: description, category: category, price: price, stockLevel: stockLevel)
+        salesTaxRate = 0.25
+    }
+    
+    override var upsells: [Product.UpsellPooortunities] {
+        return [.SoccerVideos]
+    }
+}
