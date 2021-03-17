@@ -18,8 +18,36 @@ final class ProductDataStore {
         uiQ = DispatchQueue.main
     }
     
+//    func loadData() -> [Product] {
+//        for p in productData {
+//            networkQ.async { [self] in
+//                let stockConn = NetworkPool.getConnection()
+//                let level = stockConn.getStockLevel(name: p.name)
+//                if level != nil {
+//                    p.stockLevel = level!
+//                    uiQ.async {
+//                        // 可选回调用于告知其他组件信息更新
+//                        if callBack != nil {
+//                            callBack!(p)
+//                        }
+//                    }
+//                }
+//                NetworkPool.returnConnection(conn: stockConn)
+//            }
+//        }
+//        return productData
+//    }
+//
     func loadData() -> [Product] {
-        for p in productData {
+        var products = [Product]()
+        
+        
+        for product in productData {
+            var p = PriceDecorator(product: product)
+            if p.category == "Soccer" {
+                p = SoccerDecreaseDecorator(product: p)
+            }
+            
             networkQ.async { [self] in
                 let stockConn = NetworkPool.getConnection()
                 let level = stockConn.getStockLevel(name: p.name)
@@ -34,8 +62,10 @@ final class ProductDataStore {
                 }
                 NetworkPool.returnConnection(conn: stockConn)
             }
+            
+            products.append(p)
         }
-        return productData
+        return products
     }
     
     private var productData: [Product] = [
