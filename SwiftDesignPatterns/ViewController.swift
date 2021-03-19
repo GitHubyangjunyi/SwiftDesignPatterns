@@ -23,18 +23,21 @@ class ViewController: UIViewController {
         
         displayStockTotal()
         
-        productStore.callBack = { [self] (p: Product) in
-            for cell in tableView.visibleCells {
-                if let pcell = cell as? ProductTableCell {
-                    if pcell.product?.name == p.name {
-                        pcell.stockStepper.value = Double(p.stockLevel)
-                        pcell.stockField.text = String(p.stockLevel)
-                    }
+        let bridge = EventBridge(callback: updateStockLevel(name:level:))
+        
+        productStore.callBack = bridge.inputCallback
+    }
+    
+    func updateStockLevel(name: String, level: Int) {
+        for cell in tableView.visibleCells {
+            if let pcell = cell as? ProductTableCell {
+                if pcell.product?.name == name {
+                    pcell.stockStepper.value = Double(level)
+                    pcell.stockField.text = String(level)
                 }
             }
-            displayStockTotal()
         }
-        
+        displayStockTotal()
     }
 
     func displayStockTotal() {
@@ -109,4 +112,20 @@ extension ViewController: UITableViewDelegate {
     func tableView(_ tableView: UITableView, heightForRowAt indexPath: IndexPath) -> CGFloat {
         return 60
     }
+}
+
+// 用来分离事件的来源与事件的去向
+class EventBridge {
+    private let outputCallback: (String, Int) -> Void
+    
+    init(callback: @escaping (String, Int) -> Void) {
+        self.outputCallback = callback
+    }
+    
+    var inputCallback: (Product) -> Void {
+        return { p in
+            self.outputCallback(p.name, p.stockLevel)
+        }
+    }
+    
 }
