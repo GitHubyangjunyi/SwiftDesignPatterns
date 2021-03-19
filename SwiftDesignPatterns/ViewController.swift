@@ -41,7 +41,12 @@ class ViewController: UIViewController {
         let finalTotals = productStore.products.reduce((0, 0.0)) { (result, item) -> (Int, Double) in
             (result.0 + item.stockLevel, result.1 + item.stockValue)
         }
-        totalStockLabel.text = "\(finalTotals.0) Products in Stock | Total Value: \(Utils.currencyStringFromNumber(number: finalTotals.1))"
+        
+        let factory = StockTotalFactory.getFactory(curr: .GBP)
+        let totalAmount = factory.converter?.convertTotal(total: finalTotals.1)
+        let formatted = factory.formatter?.formatTotal(total: totalAmount!)
+        
+        totalStockLabel.text = "\(finalTotals.0) Products in Stock | Total Value: \(String(describing: formatted)))"
     }
     
     @IBAction func stockLevelDidChange(_ sender: Any) {
