@@ -108,3 +108,35 @@ class EuroHandlerAdapter: StockTotalFactory, StockValueConverter, StockValueForm
     }
     
 }
+
+// 外观模式
+class StockTotalFacade {
+    enum Currency {
+        case USD
+        case GBP
+        case EUR
+    }
+    
+    class func formatCurrencyAmount(amount: Double, currency: Currency) -> String? {
+        var stfCurrency: StockTotalFactory.Currency
+        
+        switch currency {
+        case .USD:
+            stfCurrency = .USD
+        case .GBP:
+            stfCurrency = .GBP
+        case .EUR:
+            stfCurrency = .EUR
+        }
+        
+        let factory = StockTotalFactory.getFactory(curr: stfCurrency)
+        let totalAmount = factory.converter?.convertTotal(total: amount)
+        if totalAmount != nil {
+            let formattedValue = factory.formatter?.formatTotal(total: totalAmount!)
+            if formattedValue != nil {
+                return formattedValue
+            }
+        }
+        return nil
+    }
+}

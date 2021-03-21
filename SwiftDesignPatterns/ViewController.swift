@@ -45,9 +45,10 @@ class ViewController: UIViewController {
             (result.0 + item.stockLevel, result.1 + item.stockValue)
         }
         
-        let factory = StockTotalFactory.getFactory(curr: .GBP)
-        let totalAmount = factory.converter?.convertTotal(total: finalTotals.1)
-        let formatted = factory.formatter?.formatTotal(total: totalAmount!)
+        //let factory = StockTotalFactory.getFactory(curr: .GBP)
+        //let totalAmount = factory.converter?.convertTotal(total: finalTotals.1)
+        //let formatted = factory.formatter?.formatTotal(total: totalAmount!)
+        let formatted = StockTotalFacade.formatCurrencyAmount(amount: finalTotals.1, currency: .EUR)
         
         totalStockLabel.text = "\(finalTotals.0) Products in Stock | Total Value: \(String(describing: formatted)))"
     }
