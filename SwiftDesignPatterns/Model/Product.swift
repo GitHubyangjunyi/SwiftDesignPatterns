@@ -15,7 +15,6 @@ class Product: NSObject, NSCopying {
     
     private var stockLevelBackingValue = 0
     private var priceBackingValue = 0.0
-    fileprivate var salesTaxRate: Double = 0.2
     
     private(set) var price: Double {
         get { priceBackingValue }
@@ -28,18 +27,7 @@ class Product: NSObject, NSCopying {
     }
     
     var stockValue: Double {
-        get { (price * (1 + salesTaxRate)) * Double(stockLevel) }
-    }
-    
-    var upsells: [UpsellPooortunities] {
-        return Array()
-    }
-    
-    // 顾客可能感兴趣的产品
-    enum UpsellPooortunities {
-        case SwimmingLessons
-        case MapOfLakes
-        case SoccerVideos
+        get { price  * Double(stockLevel) }
     }
     
     required init(name: String, description: String, category: String, price: Double, stockLevel: Int) {
@@ -52,7 +40,6 @@ class Product: NSObject, NSCopying {
         
         self.price = price
         self.stockLevel = stockLevel
-        
     }
     
     class func createProduct(name: String, description: String, category: String, price: Double, stockLevel: Int) -> Product {
@@ -79,21 +66,32 @@ class Product: NSObject, NSCopying {
 class WatersportsProduct: Product {
     required init(name: String, description: String, category: String, price: Double, stockLevel: Int) {
         super.init(name: name, description: description, category: category, price: price, stockLevel: stockLevel)
-        salesTaxRate = 0.1
     }
     
-    override var upsells: [Product.UpsellPooortunities] {
-        return [.SwimmingLessons, .MapOfLakes]
-    }
 }
 
 class SoccerProduct: Product {
     required init(name: String, description: String, category: String, price: Double, stockLevel: Int) {
         super.init(name: name, description: description, category: category, price: price, stockLevel: stockLevel)
-        salesTaxRate = 0.25
     }
     
-    override var upsells: [Product.UpsellPooortunities] {
-        return [.SoccerVideos]
+}
+
+class ProductComposite: Product {
+    private let products: [Product]
+    
+    required init(name: String, description: String, category: String, price: Double, stockLevel: Int) {
+        fatalError()
+    }
+    
+    init(name: String, description: String, category: String, stockLevel: Int, products: Product...) {
+        self.products = products
+        super.init(name: name, description: description, category: category, price: 0, stockLevel: stockLevel)
+    }
+    
+    override var price: Double {
+        return products.reduce(0) { (total, p) -> Double in
+           total +  p.price
+        }
     }
 }
